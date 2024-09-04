@@ -1,0 +1,258 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Blinds
+  description: Api to operate the blinds automation
+  contact:
+    name: Albert Viaplana Ventura
+    email: blinds.steering914@passinbox.com
+  license:
+    name: GPLv3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html#license-text
+
+paths:
+  /status:
+    get:
+      description: |
+        To get the current status of the system. It returns the current time as well as the information about the alarms.
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      day: 
+                        type: string
+                      current_time: 
+                        type: string
+                      alarm_up:
+                        $ref: '#/components/schemas/AlarmInfo'
+                      alarm_down:
+                        $ref: '#/components/schemas/AlarmInfo'
+
+  /up:
+    get:
+      description: |
+        To get the current status of the rise alarm 
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:                
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/AlarmGetResponse'
+    put:
+      description: |
+        Modifies alarm parameters. 
+      parameters:
+        - name: time
+          in: query
+          description: When the alarm should be fired (HH:MM)
+          required: true
+          schema:
+            type: string
+            pattern: ^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$
+            example: "21:00"
+        - name: is_active
+          in: query
+          description: When the alarm should be fired
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Your success description
+          content:
+            application/json:
+              schema:            
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/AlarmInfo'
+                  
+  /up/trigger:
+    get:
+      description: |
+        Sends a signal to raise the blinds
+      responses:
+        '200':
+          description: Raising blinds
+          content:
+            application/json:
+              schema:            
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+
+  /up/activate:
+    get:
+      description: |
+        Activates the alarm to raise the blinds
+      responses:
+        '200':
+          description: Alarm activated
+          content:
+            application/json:
+              schema:            
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+
+  /up/deactivate:
+    get:
+      description: |
+        Deactivates the alarm to raise the blinds
+      responses:
+        '200':
+          description: Alarm deactivated
+          content:
+            application/json:
+              schema:            
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+
+  /down:
+    get:
+      description: |
+        To get the current status of the lower alarm
+      responses:
+        '200':
+          description: Your success description
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/AlarmGetResponse'
+    put:
+      description: |
+        Modifies alarm parameters. 
+      parameters:
+        - name: time
+          in: query
+          description: When the alarm should be fired
+          required: true
+          schema:
+            type: string
+            pattern: ^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$
+            example: "21:00"
+        - name: active
+          in: query
+          description: When the alarm should be fired
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Your success description
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    $ref: '#/components/schemas/AlarmInfo'
+
+  /down/trigger:
+    get:
+      description: |
+        Sends a signal to pull down the blinds 
+      responses:
+        '200':
+          description: Pulling down blinds
+          content:
+            application/json:
+              schema: 
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+
+  /down/activate:
+    get:
+      description: |
+        Activates the alarm to rise the blinds
+      responses:
+        '200':
+          description: Alarm activated
+          content:
+            application/json:
+              schema:            
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+
+  /down/deactivate:
+    get:
+      description: |
+        Deactivates the alarm to rise the blinds
+      responses:
+        '200':
+          description: Alarm deactivated
+          content:
+            application/json:
+              schema:            
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+
+components:
+  schemas:
+    AlarmGetResponse:
+      type: object
+      properties:
+        time:
+          type: string
+          example: "08:00"
+          pattern: "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
+        is_active:
+          type: boolean
+    AlarmInfo:
+      type: object
+      properties:
+        time:
+          type: string
+          example: "08:00"
+          pattern: "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
+        is_active:
+          type: boolean
+        is_triggered:
+          type: boolean
+

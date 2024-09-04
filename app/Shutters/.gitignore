@@ -1,0 +1,40 @@
+
+
+### General
+.gradle
+local.properties
+build/
+**/build
+!src/**/build/
+**/*.db
+captures
+.externalNativeBuild
+.cxx
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+*.hprof
+out/
+.fleet/
+
+### iOS Xcode generated ###
+
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+!*.xcworkspace/contents.xcworkspacedata
+/.build 
+/Packages
+xcuserdata
+DerivedData/
+.swiftpm/configuration/registries.json
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+.netrc
+Package.resolved
+
+### Mac OS ###
+.DS_Store
