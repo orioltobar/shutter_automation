@@ -15,6 +15,7 @@ enum Screen {
   ANIMATION_UP,
   ANIMATION_DOWN,
   SET_UP_TIME,
+  ANIMATION_STOP,
   SET_DOWN_TIME,
   DELETE_ALARMS
 }; 
@@ -47,6 +48,7 @@ static MenuItem menu_activate_set_up;
 static MenuItem menu_activate_up;
 static MenuItem menu_activate_set_down;
 static MenuItem menu_activate_down;
+static MenuItem menu_animate_stop;
 
 struct UiState {
   bool should_update_text = true;
@@ -223,6 +225,7 @@ void on_select_press() {
 
         case ANIMATION_DOWN:
         case ANIMATION_UP:
+        case ANIMATION_STOP:
         case DELETE_ALARMS:
         case ACTIVATE_DOWN:
         case ACTIVATE_UP:
@@ -240,6 +243,11 @@ void show_down_animation() {
     change_screen(&menu_animate_down);
 }
 
+void show_stop_animation() {
+    _ui_state.last_interaction = millis();
+    change_screen(&menu_animate_stop);
+}
+
 static void initialise_menu() {
     menu_time = { TIME, TEXT, time_to_char(&state.current_time), 4, &menu_up };
     menu_up = { UP, TEXT, (char*) "    pujar persiana   ", 22, &menu_down, };
@@ -248,6 +256,7 @@ static void initialise_menu() {
     menu_set_down_time = { MENU_SET_DOWN_TIME, TEXT, (char*) "    definir hora baixada   ", 28, &menu_time };
     menu_animate_up = { ANIMATION_UP, ANIMATION, (char*) "8888AAAA****^^^^~~~~    ", 0, &menu_time };
     menu_animate_down = { ANIMATION_DOWN, ANIMATION, (char*) "    ~~~~^^^^****AAAA8888", 0, &menu_time};
+    menu_animate_stop = { ANIMATION_STOP, ANIMATION, (char*) "    ~~~~^^^^STOP^^^^~~~~     ", 29, &menu_time};
     menu_setting_down_time = { SET_DOWN_TIME, SELECTABLE, time_to_char(&state.alarm_down.time), 4, &menu_activate_down};
     menu_setting_up_time = { SET_UP_TIME, SELECTABLE, time_to_char(&state.alarm_up.time), 4, &menu_activate_up};
     menu_activate_set_up = { SET_ACTIVATE_UP, SELECTABLE, (char*) "si.no", 4, &menu_time};

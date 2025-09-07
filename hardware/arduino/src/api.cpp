@@ -15,6 +15,7 @@ static void (*_alarm_down_callback)();
 static void (*_alarm_up_callback)();
 static void (*_alarm_up_updated_callback)();
 static void (*_alarm_down_updated_callback)();
+static void (*_stop_callback)();
 
 static void on_up(Request &req, Response &res);
 static void send_alarm_info(Response &res, Alarm* alarm);
@@ -29,6 +30,7 @@ static void on_activate_down(Request &req, Response &res);
 static void on_deactivate_down(Request &req, Response &res);
 static void on_set_down_alarm(Request &req, Response &res);
 static void on_get_status(Request &req, Response &res);
+static void on_stop(Request &req, Response &res);
 static bool str_to_time(char* str_time, Time* time);
 static bool string_compare(const char* str1, const char* str2);
 static void send_wrapped_response(Response &res, const char* status, char* data);
@@ -48,6 +50,7 @@ void init_api() {
     _app.get("/down/deactivate", &on_deactivate_down);
     _app.put("/down", &on_set_down_alarm);
     _app.get("/status", &on_get_status);
+    _app.get("/stop", &on_stop);
     set_content_type();
     _server.begin();
 }
@@ -82,12 +85,21 @@ void set_on_up_updated_api_callback(void (*callback)()) {
     _alarm_up_updated_callback = callback;
 }
 
+void set_on_stop_api_callback(void (*callback)()) {
+    _stop_callback = callback;
+}
+
 static void on_up(Request &req, Response &res) {
     send_alarm_info(res, &state.alarm_up);
 }
 
 static void on_down(Request &req, Response &res) {
     send_alarm_info(res, &state.alarm_down);
+}
+
+static void on_stop(Request &req, Response &res) {
+    _stop_callback();
+    send_empty_success(res);
 }
 
 static void send_alarm_info(Response &res, Alarm* alarm) {

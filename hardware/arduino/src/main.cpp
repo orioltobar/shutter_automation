@@ -53,6 +53,7 @@ void on_down_api_called();
 void on_up_api_called();
 void on_alarm_up_fired();
 void on_alarm_down_fired();
+void on_stop_api_called();
 void update_time();
 
 void setup() {
@@ -109,6 +110,7 @@ void initialise_api() {
     set_on_down_api_callback(&on_down_api_called);
     set_on_down_updated_api_callback(&on_alarm_down_updated_ui);
     set_on_up_updated_api_callback(&store_alarm_up);
+    set_on_stop_api_callback(&on_stop_api_called);
     init_api();
 }
 
@@ -120,6 +122,11 @@ void on_up_api_called() {
 void on_down_api_called() {
   send_down_signal();
   show_down_animation();
+}
+
+void on_stop_api_called() {
+  send_stop_signal();
+  show_stop_animation();
 }
 
 void configure_buttons() {

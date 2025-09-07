@@ -233,6 +233,23 @@ paths:
                   data:
                     type: object
 
+  /stop:
+    get:
+      description: |
+        Sends a signal to stop the blinds
+      responses:
+        '200':
+          description: Stopping blinds
+          content:
+            application/json:
+              schema:            
+                type: object
+                properties:
+                  status:
+                    type: string
+                  data:
+                    type: object
+
 components:
   schemas:
     AlarmGetResponse:

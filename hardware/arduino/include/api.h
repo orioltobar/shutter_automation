@@ -7,5 +7,6 @@ void set_on_up_api_callback(void (*callback)());
 void set_on_down_api_callback(void (*callback)());
 void set_on_down_updated_api_callback(void (*callback)());
 void set_on_up_updated_api_callback(void (*callback)());
+void set_on_stop_api_callback(void (*callback)());
 
 #endif

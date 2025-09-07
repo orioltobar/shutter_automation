@@ -11,9 +11,9 @@ static char sequence_r_up[20] = "b6cb65b6cb25965b248";
 static char sequence_l_down[20] = "b6d92592c92d965b2c8";
 static char sequence_m_down[20] = "b6d92492d924965b2c8";
 static char sequence_r_down[20] = "b6cb65b6cb25965b2c8";
-// static char sequence_l_stop[20] = "b6d92592c92d965b258";
-// static char sequence_m_stop[20] = "b6d92492d924965b258";
-// static char sequence_r_stop[20] = "b6cb65b6cb25965b258";
+static char sequence_l_stop[20] = "b6d92592c92d965b258";
+static char sequence_m_stop[20] = "b6d92492d924965b258";
+static char sequence_r_stop[20] = "b6cb65b6cb25965b258";
 static unsigned char _pin_radio;
 
 void init_radio(unsigned char pin_radio) 
@@ -211,6 +211,17 @@ void send_up_signal() {
         send_command(sequence_m_up);
         delay(10);
         send_command(sequence_r_up);
+        delay(10);
+    }
+}
+
+void send_stop_signal() {
+    for (int count = 0; count < NUM_SEQUENCE_REP; count++) {
+        send_command(sequence_l_stop);
+        delay(10);
+        send_command(sequence_m_stop);
+        delay(10);
+        send_command(sequence_r_stop);
         delay(10);
     }
 }

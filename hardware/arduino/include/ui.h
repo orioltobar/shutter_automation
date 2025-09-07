@@ -17,5 +17,6 @@ void set_on_ui_up_persiona_callback(void (*callback)());
 void set_on_ui_down_persiona_callback(void (*callback)());
 void set_on_alarm_down_set_callback(void (*callback)());
 void set_on_alarm_up_set_callback(void (*callback)());
+void show_stop_animation();
 
 #endif
