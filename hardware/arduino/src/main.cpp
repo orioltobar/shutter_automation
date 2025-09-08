@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <ArduinoOTA.h>
 #include <ESP8266WiFi.h> 
 #include <time.h>         
 #include <DNSServer.h>
@@ -70,12 +71,15 @@ void setup() {
   configTime(MY_TIME_ZONE, MY_NTP_SERVER);
   WiFiManager wifiManager;
   wifiManager.autoConnect(AP_NAME);
+  ArduinoOTA.setHostname("shutter-automation");
+  ArduinoOTA.begin();
   set_on_down_alarm_callback(&on_alarm_down_fired);
   set_on_up_alarm_callback(&on_alarm_up_fired);
   initialise_api();
 }
 
 void loop() {
+  ArduinoOTA.handle();
   if (was_select_btn_pressed) {
     was_select_btn_pressed = false;
     on_select_press();
