@@ -70,7 +70,7 @@ void setup() {
   load_alarms_from_memmory();
   initialise_ui();
   configTime(MY_TIME_ZONE, MY_NTP_SERVER);
-  WiFiManager wifiManager; 
+  WiFiManager wifiManager;
   wifiManager.autoConnect(AP_NAME);
   ArduinoOTA.setHostname(OTA_HOST_NAME);
   ArduinoOTA.begin();
