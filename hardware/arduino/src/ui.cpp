@@ -256,7 +256,7 @@ static void initialise_menu() {
     menu_set_down_time = { MENU_SET_DOWN_TIME, TEXT, (char*) "    definir hora baixada   ", 28, &menu_time };
     menu_animate_up = { ANIMATION_UP, ANIMATION, (char*) "8888AAAA****^^^^~~~~    ", 0, &menu_time };
     menu_animate_down = { ANIMATION_DOWN, ANIMATION, (char*) "    ~~~~^^^^****AAAA8888", 0, &menu_time};
-    menu_animate_stop = { ANIMATION_STOP, ANIMATION, (char*) "    ~~~~^^^^STOP^^^^~~~~     ", 29, &menu_time};
+    menu_animate_stop = { ANIMATION_STOP, ANIMATION, (char*) "    ~~~~^^^^STOP^^^^~~~~    ", 28, &menu_time};
     menu_setting_down_time = { SET_DOWN_TIME, SELECTABLE, time_to_char(&state.alarm_down.time), 4, &menu_activate_down};
     menu_setting_up_time = { SET_UP_TIME, SELECTABLE, time_to_char(&state.alarm_up.time), 4, &menu_activate_up};
     menu_activate_set_up = { SET_ACTIVATE_UP, SELECTABLE, (char*) "si.no", 4, &menu_time};
