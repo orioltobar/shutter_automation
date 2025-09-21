@@ -28,6 +28,7 @@
 #define MY_NTP_SERVER "at.pool.ntp.org"           
 #define MY_TIME_ZONE "CET-1CEST,M3.5.0/02,M10.5.0/03" 
 #define AP_NAME "APAlarmaPersiana"
+#define OTA_HOST_NAME "shutter-automation"
 #define DEBOUNCE_BTN_MS 200
 #define TIME_UPDATE_INTERVAL_MS 1000
 
@@ -69,9 +70,9 @@ void setup() {
   load_alarms_from_memmory();
   initialise_ui();
   configTime(MY_TIME_ZONE, MY_NTP_SERVER);
-  WiFiManager wifiManager;
+  WiFiManager wifiManager; 
   wifiManager.autoConnect(AP_NAME);
-  ArduinoOTA.setHostname("shutter-automation");
+  ArduinoOTA.setHostname(OTA_HOST_NAME);
   ArduinoOTA.begin();
   set_on_down_alarm_callback(&on_alarm_down_fired);
   set_on_up_alarm_callback(&on_alarm_up_fired);
