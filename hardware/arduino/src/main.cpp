@@ -14,7 +14,7 @@
 #include "radio.h" 
 
 #define PIN_DISPLAY_CLK 4
-#define PIN_DISPLAY_DATA 13
+#define PIN_DISPLAY_DATA 17
 #define PIN_DISPLAY_1 16
 #define PIN_DISPLAY_2 12
 #define PIN_DISPLAY_3 2
@@ -22,7 +22,8 @@
 
 #define PIN_BUTTON_SELECT 14
 #define PIN_BUTTON_NEXT 5
-#define PIN_RADIO 15
+#define PIN_BUTTON_STOP 15
+#define PIN_RADIO 13
 #define MY_NTP_SERVER "at.pool.ntp.org"           
 #define MY_TIME_ZONE "CET-1CEST,M3.5.0/02,M10.5.0/03" 
 #define AP_NAME "APAlarmaPersiana"
@@ -32,8 +33,10 @@
 Display display = Display(PIN_DISPLAY_CLK, PIN_DISPLAY_DATA, PIN_DISPLAY_1, PIN_DISPLAY_2, PIN_DISPLAY_3, PIN_DISPLAY_4); 
 bool was_select_btn_pressed = false;
 bool was_next_btn_pressed = false;
+bool was_stop_btn_pressed = false;
 unsigned long millis_select_press = 0;
 unsigned long millis_next_press = 0;
+unsigned long millis_stop_press = 0;
 unsigned long last_millis_time = 0;
 
 State state = {
@@ -53,6 +56,7 @@ void on_down_api_called();
 void on_up_api_called();
 void on_alarm_up_fired();
 void on_alarm_down_fired();
+void on_stop_api_called();
 void update_time();
 
 void setup() {
@@ -82,6 +86,11 @@ void loop() {
     on_next_press();
   }
 
+  if (was_stop_btn_pressed) {
+    was_stop_btn_pressed = false;
+    on_stop_api_called();
+  }
+
   if (millis() - last_millis_time > TIME_UPDATE_INTERVAL_MS) {
     last_millis_time = millis();
     update_time();
@@ -104,11 +113,19 @@ void IRAM_ATTR interrupt_select() {
   }
 }
 
+void IRAM_ATTR interrupt_stop() {
+  if (millis() - millis_stop_press > DEBOUNCE_BTN_MS) {
+     millis_stop_press = millis();
+     was_stop_btn_pressed = true;
+  }
+}
+
 void initialise_api() {
     set_on_up_api_callback(&on_up_api_called);
     set_on_down_api_callback(&on_down_api_called);
     set_on_down_updated_api_callback(&on_alarm_down_updated_ui);
     set_on_up_updated_api_callback(&store_alarm_up);
+    set_on_stop_api_callback(&on_stop_api_called);
     init_api();
 }
 
@@ -122,11 +139,18 @@ void on_down_api_called() {
   show_down_animation();
 }
 
+void on_stop_api_called() {
+  send_stop_signal();
+  show_stop_animation();
+}
+
 void configure_buttons() {
   pinMode(PIN_BUTTON_NEXT, INPUT_PULLUP);
   pinMode(PIN_BUTTON_SELECT, INPUT_PULLUP);
+  pinMode(PIN_BUTTON_STOP, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(PIN_BUTTON_NEXT), interrupt_next, FALLING);
   attachInterrupt(digitalPinToInterrupt(PIN_BUTTON_SELECT), interrupt_select, FALLING);
+  attachInterrupt(digitalPinToInterrupt(PIN_BUTTON_STOP), interrupt_stop, FALLING);
 }
 
 void initialise_ui() {
