@@ -19,8 +19,14 @@
 
     <string name="raise">Raise</string>
     <string name="retry">Retry</string>
+    <string name="stop">Stop</string>
 
     <string name="settings">Settings</string>
 
     <string name="type">Type</string>
+
+    <string name="all_blinds">All</string>
+    <string name="right_blinds">Right</string>
+    <string name="center_blinds">Center</string>
+    <string name="left_blinds">Left</string>
 </resources>
