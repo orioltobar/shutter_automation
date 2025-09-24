@@ -8,7 +8,7 @@
 #define TRUE_STR "true"
 #define FALSE_STR "false"
 #define BOOL_TO_STR(b) (b ? TRUE_STR : FALSE_STR)
-#define BLINDS_PARAM "blinds"
+#define BLINDS_PARAM "blind"
 
 WiFiServer _server(80);
 Application _app;
@@ -16,9 +16,9 @@ static void (*_alarm_down_callback)();
 static void (*_alarm_up_callback)();
 static void (*_alarm_up_updated_callback)();
 static void (*_alarm_down_updated_callback)();
-static void (*_stop_callback)();
 static void (*_up_callback_with_blind)(BlindType blind_type);
 static void (*_down_callback_with_blind)(BlindType blind_type);
+static void (*_stop_callback_with_blind)(BlindType blind_type);
 
 static void on_up(Request &req, Response &res);
 static void send_alarm_info(Response &res, Alarm* alarm);
@@ -89,16 +89,16 @@ void set_on_up_updated_api_callback(void (*callback)()) {
     _alarm_up_updated_callback = callback;
 }
 
-void set_on_stop_api_callback(void (*callback)()) {
-    _stop_callback = callback;
-}
-
 void set_on_down_with_blind_api_callback(void (*callback)(BlindType blind_type)) {
     _down_callback_with_blind = callback;
 }
 
 void set_on_up_with_blind_api_callback(void (*callback)(BlindType blind_type)) {
     _up_callback_with_blind = callback;
+}
+
+void set_on_stop_with_blind_api_callback(void (*callback)(BlindType blind_type)) {
+    _stop_callback_with_blind = callback;
 }
 
 static void on_up(Request &req, Response &res) {
@@ -110,8 +110,12 @@ static void on_down(Request &req, Response &res) {
 }
 
 static void on_stop(Request &req, Response &res) {
-    _stop_callback();
-    send_empty_success(res);
+    char blind_param[10];
+    if (req.query(BLINDS_PARAM, blind_param, sizeof(blind_param))) {
+        BlindType blind_type = get_blind_type_from_string(blind_param);
+        _stop_callback_with_blind(blind_type);
+        send_empty_success(res);
+    }
 }
 
 static void send_alarm_info(Response &res, Alarm* alarm) {

@@ -60,7 +60,8 @@ void on_up_api_called();
 void on_up_api_called_with_blind(BlindType blind_type);
 void on_alarm_up_fired();
 void on_alarm_down_fired();
-void on_stop_api_called();
+void on_stop_called();
+void on_stop_api_called_with_blind(BlindType blind_type); 
 void update_time();
 
 void setup() {
@@ -95,7 +96,7 @@ void loop() {
 
   if (was_stop_btn_pressed) {
     was_stop_btn_pressed = false;
-    on_stop_api_called();
+    on_stop_called();
   }
 
   if (millis() - last_millis_time > TIME_UPDATE_INTERVAL_MS) {
@@ -134,7 +135,7 @@ void initialise_api() {
     set_on_down_with_blind_api_callback(&on_down_api_called_with_blind);
     set_on_down_updated_api_callback(&on_alarm_down_updated_ui);
     set_on_up_updated_api_callback(&store_alarm_up);
-    set_on_stop_api_callback(&on_stop_api_called);
+    set_on_stop_with_blind_api_callback(&on_stop_api_called_with_blind);
     init_api();
 }
 
@@ -153,7 +154,7 @@ void on_down_api_called() {
   show_down_animation();
 }
 
-void on_stop_api_called() {
+void on_stop_called() {
   send_stop_signal();
   show_stop_animation();
 }
@@ -161,6 +162,11 @@ void on_stop_api_called() {
 void on_down_api_called_with_blind(BlindType blind_type) {
   send_down_signal_with_blind(blind_type);
   show_down_animation();
+}
+
+void on_stop_api_called_with_blind(BlindType blind_type) {
+  send_stop_signal_with_blind(blind_type);
+  show_stop_animation();
 }
 
 void configure_buttons() {

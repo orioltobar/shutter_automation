@@ -8,5 +8,6 @@
     void send_down_signal();
     void send_down_signal_with_blind(BlindType blind_type);
     void send_stop_signal();
+    void send_stop_signal_with_blind(BlindType blind_type);
 
 #endif

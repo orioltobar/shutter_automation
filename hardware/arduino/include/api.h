@@ -9,6 +9,6 @@ void set_on_down_api_callback(void (*callback)());
 void set_on_down_updated_api_callback(void (*callback)());
 void set_on_down_with_blind_api_callback(void (*callback)(BlindType blind_type));
 void set_on_up_updated_api_callback(void (*callback)());
-void set_on_stop_api_callback(void (*callback)());
+void set_on_stop_with_blind_api_callback(void (*callback)(BlindType blind_type));
 
 #endif

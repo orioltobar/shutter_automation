@@ -276,3 +276,28 @@ void send_stop_signal() {
         delay(10);
     }
 }
+
+void send_stop_signal_with_blind(BlindType blind_type) {
+    for (int count = 0; count < NUM_SEQUENCE_REP; count++) {
+        if (blind_type == LEFT) {
+            send_command(sequence_l_stop);
+            delay(10);
+        }
+        if (blind_type == CENTER) {
+            send_command(sequence_m_stop);
+            delay(10);
+        }
+        if (blind_type == RIGHT) {
+            send_command(sequence_r_stop);
+            delay(10);
+        }
+        if (blind_type == ALL) {
+            send_command(sequence_l_stop);
+            delay(10);
+            send_command(sequence_m_stop);
+            delay(10);
+            send_command(sequence_r_stop);
+            delay(10);
+        }
+    }
+}
