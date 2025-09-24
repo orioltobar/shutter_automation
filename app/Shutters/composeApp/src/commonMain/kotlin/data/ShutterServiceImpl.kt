@@ -53,7 +53,7 @@ class ShutterServiceImpl(
     override suspend fun triggerDown(blindType: BlindType): Result<Unit> =
         httpClient.get {
             url { url("/down/trigger") }
-            parameter("blinds", blindType.value )
+            parameter(BLIND_PARAM, blindType.value)
         }
             .body<ResponseWrapper<Unit>>()
             .unwrap()
@@ -61,7 +61,7 @@ class ShutterServiceImpl(
     override suspend fun triggerUp(blindType: BlindType): Result<Unit> =
         httpClient.get {
             url { url("/up/trigger") }
-            parameter("blinds", blindType.value )
+            parameter(BLIND_PARAM, blindType.value)
         }.body<ResponseWrapper<Unit>>()
             .unwrap()
 
@@ -97,9 +97,12 @@ class ShutterServiceImpl(
             .unwrap()
             .map { it.toPresentation("Rise") }
 
-    override suspend fun stop() =
+    override suspend fun stop(blindType: BlindType) =
         safeRequest {
-            httpClient.get { url("/stop") }
+            httpClient.get {
+                url("/stop")
+                parameter(BLIND_PARAM, blindType.value)
+            }
                 .body<ResponseWrapper<Unit>>()
                 .unwrap()
         }
@@ -151,6 +154,10 @@ class ShutterServiceImpl(
             type = AutomationType.valueOf(type),
             id = 0
         )
+
+    private companion object {
+        const val BLIND_PARAM = "blind"
+    }
 }
 
 

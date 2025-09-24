@@ -178,9 +178,9 @@ private fun BlindSelectorComponent(
             onClick = { onClick(BlindType.ALL) }
         )
         RadioButtonComponent(
-            text = stringResource(Res.string.right_blinds),
-            isSelected = selectedButtons == BlindType.RIGHT,
-            onClick = { onClick(BlindType.RIGHT) }
+            text = stringResource(Res.string.left_blinds),
+            isSelected = selectedButtons == BlindType.LEFT,
+            onClick = { onClick(BlindType.LEFT) }
         )
         RadioButtonComponent(
             text = stringResource(Res.string.center_blinds),
@@ -188,9 +188,9 @@ private fun BlindSelectorComponent(
             onClick = { onClick(BlindType.CENTER) }
         )
         RadioButtonComponent(
-            text = stringResource(Res.string.left_blinds),
-            isSelected = selectedButtons == BlindType.LEFT,
-            onClick = { onClick(BlindType.LEFT) }
+            text = stringResource(Res.string.right_blinds),
+            isSelected = selectedButtons == BlindType.RIGHT,
+            onClick = { onClick(BlindType.RIGHT) }
         )
     }
 }

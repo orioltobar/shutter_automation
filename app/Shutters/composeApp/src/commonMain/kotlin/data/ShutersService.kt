@@ -27,5 +27,5 @@ interface ShuttersApi {
 
     suspend fun setAlarmUp(time: String? = null, isActive: Boolean? = null): Result<Automation>
 
-    suspend fun stop(): Result<Unit>
+    suspend fun stop(blindType: BlindType): Result<Unit>
 }
