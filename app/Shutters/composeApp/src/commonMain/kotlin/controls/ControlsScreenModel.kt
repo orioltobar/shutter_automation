@@ -38,7 +38,7 @@ class ControlsScreenModel(private val repository: ShuttersApi) :
 
     private fun onStopButtonClicked() {
         screenModelScope.launch {
-            repository.stop()
+            repository.stop(currentState.selectedBlind)
                 .onFailure(::onFailure)
         }
     }
