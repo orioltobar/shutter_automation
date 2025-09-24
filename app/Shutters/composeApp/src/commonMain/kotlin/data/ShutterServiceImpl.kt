@@ -1,5 +1,10 @@
 package data
 
+import data.model.AutomationData
+import data.model.ErrorData
+import data.model.ResponseStatus.Success
+import data.model.ResponseWrapper
+import data.model.StatusData
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.ClientRequestException
@@ -12,24 +17,20 @@ import io.ktor.client.request.url
 import io.ktor.serialization.JsonConvertException
 import io.ktor.utils.io.errors.IOException
 import model.Automation
-import data.model.AutomationData
 import model.AutomationType
-import data.model.ErrorData
+import model.BlindType
 import model.NetworkException
 import model.ParseException
 import model.RequestException
-import data.model.ResponseStatus.*
-import data.model.ResponseWrapper
 import model.ServerException
 import model.Status
-import data.model.StatusData
 import model.UnknownException
 
 
 class ShutterServiceImpl(
     private val localSettings: LocalSettings,
     private val httpClient: HttpClient
-): ShuttersApi {
+) : ShuttersApi {
     override fun setHost(host: String) {
         localSettings.host = host
     }
@@ -49,19 +50,20 @@ class ShutterServiceImpl(
                 .unwrap()
         }.map { it.toPresentation() }
 
-    override suspend fun triggerDown() =
-        safeRequest {
-            httpClient.get { url("/down/trigger") }
-                .body<ResponseWrapper<Unit>>()
-                .unwrap()
+    override suspend fun triggerDown(blindType: BlindType): Result<Unit> =
+        httpClient.get {
+            url { url("/down/trigger") }
+            parameter("blinds", blindType.value )
         }
+            .body<ResponseWrapper<Unit>>()
+            .unwrap()
 
-    override suspend fun triggerUp() =
-        safeRequest {
-            httpClient.get { url("/up/trigger") }
-                .body<ResponseWrapper<Unit>>()
-                .unwrap()
-        }
+    override suspend fun triggerUp(blindType: BlindType): Result<Unit> =
+        httpClient.get {
+            url { url("/up/trigger") }
+            parameter("blinds", blindType.value )
+        }.body<ResponseWrapper<Unit>>()
+            .unwrap()
 
     override suspend fun setAutomationActive(automation: Automation): Result<Automation> {
         return when (automation.type) {
@@ -79,10 +81,10 @@ class ShutterServiceImpl(
 
     override suspend fun setAlarmDown(time: String?, isActive: Boolean?): Result<Automation> =
         httpClient.put {
-                url { url("/down") }
-                isActive?.let { parameter("is_active", isActive) }
-                time?.let { parameter("time", it) }
-            }.body<ResponseWrapper<AutomationData>>()
+            url { url("/down") }
+            isActive?.let { parameter("is_active", isActive) }
+            time?.let { parameter("time", it) }
+        }.body<ResponseWrapper<AutomationData>>()
             .unwrap()
             .map { it.toPresentation("Lower") }
 
@@ -95,7 +97,14 @@ class ShutterServiceImpl(
             .unwrap()
             .map { it.toPresentation("Rise") }
 
-    private suspend fun<T> safeRequest(block: suspend () -> Result<T>) =
+    override suspend fun stop() =
+        safeRequest {
+            httpClient.get { url("/stop") }
+                .body<ResponseWrapper<Unit>>()
+                .unwrap()
+        }
+
+    private suspend fun <T> safeRequest(block: suspend () -> Result<T>) =
         try {
             block()
         } catch (exception: ClientRequestException) {
@@ -113,7 +122,7 @@ class ShutterServiceImpl(
             Result.failure(UnknownException(exception))
         }
 
-    private fun<T> ResponseWrapper<T>.unwrap() =
+    private fun <T> ResponseWrapper<T>.unwrap() =
         when (status) {
             Success.value -> Result.success(data)
             else -> {

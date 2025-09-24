@@ -1,6 +1,7 @@
 package data
 
 import model.Automation
+import model.BlindType
 import model.Status
 
 interface ShuttersApi {
@@ -14,9 +15,9 @@ interface ShuttersApi {
 
     suspend fun getState(): Result<Status>
 
-    suspend fun triggerDown(): Result<Unit>
+    suspend fun triggerDown(blindType: BlindType): Result<Unit>
 
-    suspend fun triggerUp(): Result<Unit>
+    suspend fun triggerUp(blindType: BlindType): Result<Unit>
 
     suspend fun setAutomationActive(automation: Automation): Result<Automation>
 
@@ -25,4 +26,6 @@ interface ShuttersApi {
     suspend fun setAlarmDown(time: String? = null, isActive: Boolean? = null): Result<Automation>
 
     suspend fun setAlarmUp(time: String? = null, isActive: Boolean? = null): Result<Automation>
+
+    suspend fun stop(): Result<Unit>
 }
