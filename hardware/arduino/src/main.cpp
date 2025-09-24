@@ -55,7 +55,9 @@ void configure_buttons();
 void initialise_ui();
 void initialise_api();
 void on_down_api_called();
+void on_down_api_called_with_blind(BlindType blind_type);
 void on_up_api_called();
+void on_up_api_called_with_blind(BlindType blind_type);
 void on_alarm_up_fired();
 void on_alarm_down_fired();
 void on_stop_api_called();
@@ -127,7 +129,9 @@ void IRAM_ATTR interrupt_stop() {
 
 void initialise_api() {
     set_on_up_api_callback(&on_up_api_called);
+    set_on_up_with_blind_api_callback(&on_up_api_called_with_blind);
     set_on_down_api_callback(&on_down_api_called);
+    set_on_down_with_blind_api_callback(&on_down_api_called_with_blind);
     set_on_down_updated_api_callback(&on_alarm_down_updated_ui);
     set_on_up_updated_api_callback(&store_alarm_up);
     set_on_stop_api_callback(&on_stop_api_called);
@@ -139,6 +143,11 @@ void on_up_api_called() {
   show_up_animation();
 }
 
+void on_up_api_called_with_blind(BlindType blind_type) {
+  send_up_signal_with_blind(blind_type);
+  show_up_animation();
+}
+
 void on_down_api_called() {
   send_down_signal();
   show_down_animation();
@@ -147,6 +156,11 @@ void on_down_api_called() {
 void on_stop_api_called() {
   send_stop_signal();
   show_stop_animation();
+}
+
+void on_down_api_called_with_blind(BlindType blind_type) {
+  send_down_signal_with_blind(blind_type);
+  show_down_animation();
 }
 
 void configure_buttons() {

@@ -8,6 +8,7 @@
 #define TRUE_STR "true"
 #define FALSE_STR "false"
 #define BOOL_TO_STR(b) (b ? TRUE_STR : FALSE_STR)
+#define BLINDS_PARAM "blinds"
 
 WiFiServer _server(80);
 Application _app;
@@ -16,6 +17,8 @@ static void (*_alarm_up_callback)();
 static void (*_alarm_up_updated_callback)();
 static void (*_alarm_down_updated_callback)();
 static void (*_stop_callback)();
+static void (*_up_callback_with_blind)(BlindType blind_type);
+static void (*_down_callback_with_blind)(BlindType blind_type);
 
 static void on_up(Request &req, Response &res);
 static void send_alarm_info(Response &res, Alarm* alarm);
@@ -37,6 +40,7 @@ static void send_wrapped_response(Response &res, const char* status, char* data)
 static void send_empty_success(Response &res);
 static void send_fail(Response &res, const char* title);
 static void set_content_type();
+static BlindType get_blind_type_from_string(char* blind_str);
 
 void init_api() {
     _app.get("/up/trigger", &on_up_trigger);
@@ -89,6 +93,14 @@ void set_on_stop_api_callback(void (*callback)()) {
     _stop_callback = callback;
 }
 
+void set_on_down_with_blind_api_callback(void (*callback)(BlindType blind_type)) {
+    _down_callback_with_blind = callback;
+}
+
+void set_on_up_with_blind_api_callback(void (*callback)(BlindType blind_type)) {
+    _up_callback_with_blind = callback;
+}
+
 static void on_up(Request &req, Response &res) {
     send_alarm_info(res, &state.alarm_up);
 }
@@ -119,12 +131,24 @@ static void send_wrapped_response(Response &res, const char* success, char* data
 }
 
 static void on_up_trigger(Request &req, Response &res) {
-    _alarm_up_callback();
+    char blind_param[10]; 
+    if (req.query(BLINDS_PARAM, blind_param, sizeof(blind_param))) {
+        BlindType blind_type = get_blind_type_from_string(blind_param);
+        _up_callback_with_blind(blind_type);
+    } else {
+        _alarm_up_callback();
+    }
     send_empty_success(res);
 }
 
 static void on_down_trigger(Request &req, Response &res) {
-    _alarm_down_callback();
+    char blind_param[10]; 
+    if (req.query(BLINDS_PARAM, blind_param, sizeof(blind_param))) {
+        BlindType blind_type = get_blind_type_from_string(blind_param);
+        _down_callback_with_blind(blind_type);
+    } else {
+        _alarm_down_callback();
+    }
     send_empty_success(res);
 }
 
@@ -274,4 +298,15 @@ void on_get_status(Request &req, Response &res) {
         TRIGGERED_PARAM,
         BOOL_TO_STR(state.alarm_down.triggered));
     send_wrapped_response(res, status, data);
+}
+
+static BlindType get_blind_type_from_string(char* blind_str) {
+  if (string_compare(blind_str, "left")) {
+    return LEFT;
+  } else if (string_compare(blind_str, "right")) {
+    return RIGHT;
+  } else if (string_compare(blind_str, "center")) {
+    return CENTER;
+  }
+  return ALL;
 }

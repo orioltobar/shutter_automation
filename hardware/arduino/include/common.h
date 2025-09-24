@@ -24,4 +24,11 @@ struct State {
 
 extern struct State state;
 
+enum BlindType {
+    LEFT,
+    CENTER,
+    RIGHT,
+    ALL
+};
+
 #endif

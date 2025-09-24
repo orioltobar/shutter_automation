@@ -1,5 +1,6 @@
 #include "radio.h"
 #include <Arduino.h>
+#include "common.h"
 
 // This value defines how many times we will send a signal. 
 // We send it multiple times because sometimes it is not picked by the receiver.
@@ -204,6 +205,31 @@ void send_down_signal() {
     }
 }
 
+void send_down_signal_with_blind(BlindType blind_type) {
+    for (int count = 0; count < NUM_SEQUENCE_REP; count++) {
+        if (blind_type == LEFT) {
+            send_command(sequence_l_down);
+            delay(10);
+        }
+        if (blind_type == CENTER) {
+            send_command(sequence_m_down);
+            delay(10);
+        }
+        if (blind_type == RIGHT) {
+            send_command(sequence_r_down);
+            delay(10);
+        }
+        if (blind_type == ALL) {
+            send_command(sequence_l_down);
+            delay(10);
+            send_command(sequence_m_down);
+            delay(10);
+            send_command(sequence_r_down);
+            delay(10);
+        }
+    }
+}
+
 void send_up_signal() {
     for (int count = 0; count < NUM_SEQUENCE_REP; count++) {
         send_command(sequence_l_up);
@@ -212,6 +238,31 @@ void send_up_signal() {
         delay(10);
         send_command(sequence_r_up);
         delay(10);
+    }
+}
+
+void send_up_signal_with_blind(BlindType blind_type) {
+    for (int count = 0; count < NUM_SEQUENCE_REP; count++) {
+        if (blind_type == LEFT) {
+            send_command(sequence_l_up);
+            delay(10);
+        }
+        if (blind_type == CENTER) {
+            send_command(sequence_m_up);
+            delay(10);
+        }
+        if (blind_type == RIGHT) {
+            send_command(sequence_r_up);
+            delay(10);
+        }
+        if (blind_type == ALL) {
+            send_command(sequence_l_up);
+            delay(10);
+            send_command(sequence_m_up);
+            delay(10);
+            send_command(sequence_r_up);
+            delay(10);
+        }
     }
 }
 
